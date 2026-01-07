@@ -1,0 +1,38 @@
+#Fix the PDC Emulator external NTP
+
+w32tm /config /manualpeerlist:"time.windows.com,0x9 pool.ntp.org,0x9" /syncfromflags:manual /reliable:yes /update
+
+# Restart Service
+
+net stop w32time
+net start w32time
+
+w32tm /resync /force
+#Verify DC is correct
+w32tm /query /source
+w32tm /query /configuration
+
+
+
+#Ensure clients/servers stay on domain time
+
+w32tm /query /source
+
+
+#Create delayed resync script on the DC
+
+mkdir C:\Scripts
+
+Create file C:\Scripts\TimeResync.ps1 with this content:
+
+Start-Sleep -Seconds 180
+w32tm /resync /force
+
+
+#Create Scheduled Task (runs after every reboot)
+
+schtasks /create /tn "DC Time Resync After Boot" /tr "powershell.exe -ExecutionPolicy Bypass -File C:\Scripts\TimeResync.ps1" /sc onstart /ru SYSTEM /rl HIGHEST
+
+#Reboot the DC (during a safe window)
+w32tm /query /source
+w32tm /query /status
