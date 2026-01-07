@@ -7,7 +7,7 @@ w32tm /config /manualpeerlist:"time.windows.com,0x9 pool.ntp.org,0x9" /syncfromf
 net stop w32time
 net start w32time
 
-w32tm /resync /force
+w32tm /resync
 #Verify DC is correct
 w32tm /query /source
 w32tm /query /configuration
@@ -26,7 +26,7 @@ mkdir C:\Scripts
 Create file C:\Scripts\TimeResync.ps1 with this content:
 
 Start-Sleep -Seconds 180
-w32tm /resync /force
+w32tm /resync
 
 
 #Create Scheduled Task (runs after every reboot)
