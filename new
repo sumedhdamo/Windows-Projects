@@ -1,2 +1,3 @@
 Export-DhcpServer -ComputerName localhost -File "C:\DHCP_Backup_YYYY-MM-DD.xml" -Leases
 
+Get-DhcpServerv4Lease | Where-Object {$_.AddressState -eq "Active"}
