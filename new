@@ -1,5 +1,2 @@
-reg add HKLM\SYSTEM\CurrentControlSet\Services
-\W32Time\TimeProviders\VMICTimeProvider /v 
-Enabled /t REG_DWORD /d 0 /Export-DhcpServer -ComputerName localhost -File "C:\DHCP_Backup_YYYY-MM-DD.xml" -Leases
-
+Export-DhcpServer -ComputerName localhost -File "C:\DHCP_Backup_YYYY-MM-DD.xml" -Leases
 
