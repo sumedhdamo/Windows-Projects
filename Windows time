@@ -4,8 +4,7 @@ w32tm /config /manualpeerlist:"time.windows.com,0x9 pool.ntp.org,0x9" /syncfromf
 
 # Restart Service
 
-net stop w32time
-net start w32time
+net stop w32time && net start w32time
 
 w32tm /resync
 #Verify DC is correct
