@@ -6,11 +6,12 @@ w32tm /config /manualpeerlist:"time.windows.com,0x9 pool.ntp.org,0x9" /syncfromf
 
 net stop w32time && net start w32time
 
-w32tm /resync
+n
+
 #Verify DC is correct
 w32tm /query /source
 w32tm /query /configuration
-
+reg add HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimeProvider /v Enabled /t REG_DWORD /d 0 /f
 
 
 #Ensure clients/servers stay on domain time
