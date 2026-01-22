@@ -1,3 +1,4 @@
-Export-DhcpServer -ComputerName localhost -File "C:\DHCP_Backup_YYYY-MM-DD.xml" -Leases
+wmic computersystem get model,manufacturer
+Get-CimInstance Win32_ComputerSystem | Select Manufacturer, Model
 
 Get-DhcpServerv4Lease | Where-Object {$_.AddressState -eq "Active"}
