@@ -24,6 +24,8 @@ reg add HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimePro
 #Create delayed resync script on the DC
 
 mkdir C:\Scripts
+cd C:\Scripts
+notepad
 
 Create file C:\Scripts\TimeResync.ps1 with this content:
 
