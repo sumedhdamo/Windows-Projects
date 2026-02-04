@@ -1,3 +1,8 @@
+#Ensure clients/servers stay on domain time
+
+w32tm /query /status
+
+
 #Fix the PDC Emulator external NTP
 
 w32tm /config /manualpeerlist:"time.windows.com,0x9 pool.ntp.org,0x9" /syncfromflags:manual /reliable:yes /update
@@ -13,9 +18,7 @@ w32tm /query /configuration
 reg add HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimeProvider /v Enabled /t REG_DWORD /d 0 /f
 
 
-#Ensure clients/servers stay on domain time
 
-w32tm /query /source
 
 
 #Create delayed resync script on the DC
