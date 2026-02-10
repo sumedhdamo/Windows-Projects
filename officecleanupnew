@@ -12,7 +12,7 @@ Expand-Archive `
   -Force
 
 
-dir C:\Temp\OfficeFix\OLicenseCleanup
+dir C:\Temp\OfficeFix\OLicenseCleanup\OLicenseCleanup
 
 
 
