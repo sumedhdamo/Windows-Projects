@@ -12,6 +12,9 @@ Expand-Archive `
   -Force
 
 
+dir C:\Temp\OfficeFix\OLicenseCleanup
+
+
 
 
 
