@@ -1,0 +1,6 @@
+$dir = "C:\Temp\OfficeFix"
+New-Item -ItemType Directory -Force -Path $dir
+
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/9/5/F/95F3F7F1-6C3E-4D32-A5C4-70F7B9A64F30/OLicenseCleanup.zip" `
+  -OutFile "$dir\OLicenseCleanup.zip"
