@@ -6,6 +6,12 @@ Invoke-WebRequest `
   -OutFile "$dir\OLicenseCleanup.zip"
 
 
+Expand-Archive `
+  -Path "C:\Temp\OfficeFix\OLicenseCleanup.zip" `
+  -DestinationPath "C:\Temp\OfficeFix\OLicenseCleanup" `
+  -Force
+
+
 
 
 
