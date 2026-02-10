@@ -1,0 +1,10 @@
+mkdir C:\Temp\OfficeFix
+cd C:\Temp\OfficeFix
+
+curl -L -o OLicenseCleanup.zip https://aka.ms/OLicenseCleanup
+curl -L -o signoutofwamaccounts.zip https://aka.ms/signoutofwamaccounts
+
+tar -xf OLicenseCleanup.zip
+tar -xf signoutofwamaccounts.zip
+
+cscript //nologo OLicenseCleanup.vbs
