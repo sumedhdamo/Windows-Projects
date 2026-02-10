@@ -1,22 +1,21 @@
 $dir = "C:\Temp\OfficeFix"
 New-Item -ItemType Directory -Path $dir -Force | Out-Null
 
+# --- Download OLicenseCleanup ---
 Invoke-WebRequest `
   -Uri "https://download.microsoft.com/download/e/1/b/e1bbdc16-fad4-4aa2-a309-2ba3cae8d424/OLicenseCleanup.zip" `
   -OutFile "$dir\OLicenseCleanup.zip"
 
+Expand-Archive "$dir\OLicenseCleanup.zip" "$dir\OLicenseCleanup" -Force
 
-Expand-Archive `
-  -Path "C:\Temp\OfficeFix\OLicenseCleanup.zip" `
-  -DestinationPath "C:\Temp\OfficeFix\OLicenseCleanup" `
-  -Force
+cscript //nologo "$dir\OLicenseCleanup\OLicenseCleanup.vbs"
 
+# --- Download WAM signout ---
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/6/8/A/68A9F6BB-27FA-4C2E-8C1E-5A6F4A5C9C3C/signoutofwamaccounts.zip" `
+  -OutFile "$dir\signoutofwamaccounts.zip"
 
-dir C:\Temp\OfficeFix\OLicenseCleanup\OLicenseCleanup
+Expand-Archive "$dir\signoutofwamaccounts.zip" "$dir\signoutofwamaccounts" -Force
 
-
-
-
-
-
-https://download.microsoft.com/download/e/1/b/e1bbdc16-fad4-4aa2-a309-2ba3cae8d424/OLicenseCleanup.zip
+PowerShell -ExecutionPolicy Bypass -File `
+  "$dir\signoutofwamaccounts\signoutofwamaccounts.ps1"
