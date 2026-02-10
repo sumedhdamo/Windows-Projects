@@ -8,3 +8,19 @@ tar -xf OLicenseCleanup.zip
 tar -xf signoutofwamaccounts.zip
 
 cscript //nologo OLicenseCleanup.vbs
+
+
+
+
+
+$path = "C:\Temp\OfficeFix"
+New-Item -ItemType Directory -Force -Path $path
+Set-Location $path
+
+Invoke-WebRequest https://aka.ms/OLicenseCleanup -OutFile OLicenseCleanup.zip
+Invoke-WebRequest https://aka.ms/signoutofwamaccounts -OutFile signoutofwamaccounts.zip
+
+Expand-Archive OLicenseCleanup.zip -Force
+Expand-Archive signoutofwamaccounts.zip -Force
+
+cscript //nologo OLicenseCleanup.vbs
