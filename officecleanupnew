@@ -1,13 +1,1 @@
-$dir = "C:\Temp\OfficeFix"
-New-Item -ItemType Directory -Force -Path $dir
-
-Start-BitsTransfer `
-  -Source "https://aka.ms/OLicenseCleanup" `
-  -Destination "$dir\OLicenseCleanup.zip"
-
-
-Expand-Archive "$dir\OLicenseCleanup.zip" -DestinationPath $dir -Force
-
-
-
-cscript //nologo C:\Temp\OfficeFix\OLicenseCleanup.vbs
+https://download.microsoft.com/download/e/1/b/e1bbdc16-fad4-4aa2-a309-2ba3cae8d424/OLicenseCleanup.zip
