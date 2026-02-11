@@ -23,3 +23,44 @@ PowerShell -ExecutionPolicy Bypass -File `
 
 
 https://download.microsoft.com/download/8/e/f/8ef13ae0-6aa8-48a2-8697-5b1711134730/WPJCleanUp.zip
+
+
+$dir = "C:\Temp\OfficeFix"
+New-Item -ItemType Directory -Path $dir -Force | Out-Null
+
+# =========================
+# 1. Download OLicenseCleanup
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/e/1/b/e1bbdc16-fad4-4aa2-a309-2ba3cae8d424/OLicenseCleanup.zip" `
+  -OutFile "$dir\OLicenseCleanup.zip"
+
+Expand-Archive "$dir\OLicenseCleanup.zip" "$dir\OLicenseCleanup" -Force
+
+cscript //nologo "$dir\OLicenseCleanup\OLicenseCleanup\OLicenseCleanup.vbs"
+
+
+# =========================
+# 2. Download WAM Signout
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/f/8/7/f8745d3b-49ad-4eac-b49a-2fa60b929e7d/signoutofwamaccounts.zip" `
+  -OutFile "$dir\signoutofwamaccounts.zip"
+
+Expand-Archive "$dir\signoutofwamaccounts.zip" "$dir\signoutofwamaccounts" -Force
+
+PowerShell -ExecutionPolicy Bypass -File `
+  "$dir\signoutofwamaccounts\signoutofwamaccounts.ps1"
+
+
+# =========================
+# 3. Download WPJCleanUp
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/8/e/f/8ef13ae0-6aa8-48a2-8697-5b1711134730/WPJCleanUp.zip" `
+  -OutFile "$dir\WPJCleanUp.zip"
+
+Expand-Archive "$dir\WPJCleanUp.zip" "$dir\WPJCleanUp" -Force
+
+PowerShell -ExecutionPolicy Bypass -File `
+  "$dir\WPJCleanUp\WPJCleanUp.ps1"
