@@ -8,14 +8,18 @@ Invoke-WebRequest `
 
 Expand-Archive "$dir\OLicenseCleanup.zip" "$dir\OLicenseCleanup" -Force
 
-cscript //nologo "$dir\OLicenseCleanup\OLicenseCleanup.vbs"
+cscript //nologo C:\Tempfix\OfficeFix\OLicenseCleanup\OLicenseCleanup\OLicenseCleanup.vbs
 
 # --- Download WAM signout ---
 Invoke-WebRequest `
-  -Uri "https://download.microsoft.com/download/6/8/A/68A9F6BB-27FA-4C2E-8C1E-5A6F4A5C9C3C/signoutofwamaccounts.zip" `
+  -Uri "https://download.microsoft.com/download/f/8/7/f8745d3b-49ad-4eac-b49a-2fa60b929e7d/signoutofwamaccounts.zip" `
   -OutFile "$dir\signoutofwamaccounts.zip"
 
 Expand-Archive "$dir\signoutofwamaccounts.zip" "$dir\signoutofwamaccounts" -Force
 
 PowerShell -ExecutionPolicy Bypass -File `
   "$dir\signoutofwamaccounts\signoutofwamaccounts.ps1"
+
+
+
+https://download.microsoft.com/download/8/e/f/8ef13ae0-6aa8-48a2-8697-5b1711134730/WPJCleanUp.zip
