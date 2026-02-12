@@ -1,0 +1,31 @@
+# Get logged-in user
+$loggedOnUser = (Get-WmiObject -Class Win32_ComputerSystem).UserName
+
+if ($loggedOnUser) {
+
+    $username = $loggedOnUser.Split("\")[-1]
+
+    # Get user SID
+    $user = Get-WmiObject Win32_UserAccount | Where-Object { $_.Name -eq $username }
+    $sid = $user.SID
+
+    Write-Output "User detected: $username"
+    Write-Output "SID detected: $sid"
+
+    # Kill Outlook if running
+    Get-Process outlook -ErrorAction SilentlyContinue | Stop-Process -Force
+
+    # Delete Outlook Profile
+    $profilePath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Office\16.0\Outlook\Profiles"
+
+    if (Test-Path $profilePath) {
+        Remove-Item $profilePath -Recurse -Force
+        Write-Output "Outlook profile removed successfully."
+    }
+    else {
+        Write-Output "Outlook profile not found."
+    }
+}
+else {
+    Write-Output "No user currently logged in."
+}
