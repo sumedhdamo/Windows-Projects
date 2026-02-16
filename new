@@ -1,4 +1,0 @@
-wmic computersystem get model,manufacturer
-Get-CimInstance Win32_ComputerSystem | Select Manufacturer, Model
-
-Get-DhcpServerv4Lease | Where-Object {$_.AddressState -eq "Active"}
