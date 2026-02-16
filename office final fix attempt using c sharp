@@ -1,0 +1,112 @@
+# =========================
+# Settings
+# =========================
+$dir = "C:\Temp\OfficeFix"   # keep consistent!
+New-Item -ItemType Directory -Path $dir -Force | Out-Null
+
+# =========================
+# Helper: get logged-on user + SID safely
+# =========================
+$loggedOn = (Get-CimInstance -ClassName Win32_ComputerSystem).UserName
+if (-not $loggedOn) {
+    Write-Output "No interactive user logged in. Cannot run WAM signout in user context."
+    exit 1
+}
+
+try {
+    $sid = (New-Object System.Security.Principal.NTAccount($loggedOn)).
+        Translate([System.Security.Principal.SecurityIdentifier]).Value
+} catch {
+    Write-Output "Failed to translate $loggedOn to SID. Error: $($_.Exception.Message)"
+    exit 1
+}
+
+Write-Output "Logged-on user: $loggedOn"
+Write-Output "SID: $sid"
+
+# =========================
+# 1) OLicenseCleanup (SYSTEM)
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/e/1/b/e1bbdc16-fad4-4aa2-a309-2ba3cae8d424/OLicenseCleanup.zip" `
+  -OutFile "$dir\OLicenseCleanup.zip"
+
+Expand-Archive "$dir\OLicenseCleanup.zip" "$dir\OLicenseCleanup" -Force
+
+cscript //nologo "$dir\OLicenseCleanup\OLicenseCleanup\OLicenseCleanup.vbs"
+
+# =========================
+# 2) WPJCleanUp (SYSTEM)  (note: it's a CMD)
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/8/e/f/8ef13ae0-6aa8-48a2-8697-5b1711134730/WPJCleanUp.zip" `
+  -OutFile "$dir\WPJCleanUp.zip"
+
+Expand-Archive "$dir\WPJCleanUp.zip" "$dir\WPJCleanUp" -Force
+
+# If your extracted path differs, adjust this line after you confirm the folder structure.
+& "$dir\WPJCleanUp\WPJCleanUp\WPJCleanUp\WPJCleanUp.cmd"
+
+# =========================
+# 3) Close Outlook + remove Outlook profile (target user's hive)
+# =========================
+Get-Process outlook -ErrorAction SilentlyContinue | Stop-Process -Force
+
+$profilePath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Office\16.0\Outlook\Profiles"
+if (Test-Path $profilePath) {
+    Remove-Item $profilePath -Recurse -Force
+    Write-Output "Outlook profile removed for $loggedOn"
+} else {
+    Write-Output "Outlook profile path not found for $loggedOn"
+}
+
+# =========================
+# 4) Download WAM signout tool (SYSTEM stages files)
+# =========================
+Invoke-WebRequest `
+  -Uri "https://download.microsoft.com/download/f/8/7/f8745d3b-49ad-4eac-b49a-2fa60b929e7d/signoutofwamaccounts.zip" `
+  -OutFile "$dir\signoutofwamaccounts.zip"
+
+Expand-Archive "$dir\signoutofwamaccounts.zip" "$dir\signoutofwamaccounts" -Force
+
+$wamScript = "$dir\signoutofwamaccounts\signoutofwamaccounts.ps1"
+if (-not (Test-Path $wamScript)) {
+    Write-Output "WAM script not found at $wamScript"
+    exit 1
+}
+
+# =========================
+# 5) Run WAM signout as Logged-on User (CreateProcessAsUser)
+# =========================
+
+# --- PASTE THE FULL C# SOURCE HERE (from the rzander/murrayju helper) ---
+$Source = @"
+using System;
+using System.Runtime.InteropServices;
+
+// PASTE THE REST OF THE CODE YOU SHOWED (namespace murrayju.ProcessExtensions ...)
+// Ensure the public method is callable, commonly:
+// public static bool StartProcessAsCurrentUser(string appPath, string cmdLine, string workDir = null, bool visible = false)
+"@
+
+try {
+    Add-Type -TypeDefinition $Source -Language CSharp -ErrorAction Stop
+} catch {
+    Write-Output "Failed to compile C# helper. Error: $($_.Exception.Message)"
+    exit 1
+}
+
+# Build command to run in user session
+$cmd = "-NoProfile -ExecutionPolicy Bypass -File `"$wamScript`""
+Write-Output "Launching WAM signout as logged-on user..."
+
+# Call into the helper (method name may differ depending on the exact source you pasted)
+# Common pattern:
+# [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser("powershell.exe", $cmd)
+$ok = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser("powershell.exe", $cmd)
+
+Write-Output "WAM launch result: $ok"
+
+# Optional: create a marker file (SYSTEM can check it later)
+New-Item -Path "$dir\wam_launched.txt" -Force | Out-Null
+Set-Content "$dir\wam_launched.txt" "Launched at $(Get-Date) for $loggedOn"
