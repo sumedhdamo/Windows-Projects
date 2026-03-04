@@ -6,3 +6,5 @@ Test-IRMConfiguration
 Import-RMSTrustedPublishingDomain -RMSOnline -Name "RMS Online"
 
 https://portal.azure.com/#view/Microsoft_Azure_InformationProtection/RMSMenuBlade/~/overview
+
+Get-IRMConfiguration | fl AzureRMSLicensingEnabled,InternalLicensingEnabled
