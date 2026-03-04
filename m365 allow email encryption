@@ -2,3 +2,5 @@ Connect-ExchangeOnline
 Get-IRMConfiguration | fl AzureRMSLicensingEnabled
 Set-IRMConfiguration -AzureRMSLicensingEnabled $true
 Test-IRMConfiguration
+
+Import-RMSTrustedPublishingDomain -RMSOnline -Name "RMS Online"
