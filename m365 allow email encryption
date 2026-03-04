@@ -1,0 +1,4 @@
+Connect-ExchangeOnline
+
+Set-IRMConfiguration -AzureRMSLicensingEnabled $true
+Test-IRMConfiguration
