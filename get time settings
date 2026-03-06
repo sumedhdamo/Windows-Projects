@@ -1,0 +1,1 @@
+w32tm /query /configuration | findstr /i "Type NtpServer"
